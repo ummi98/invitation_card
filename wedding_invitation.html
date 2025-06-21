@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ms">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kad Kahwin Digital - Ikwan & Atiqah</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      margin-bottom: 80px;
+    }
+
+    /* Cover Page Styles */
+    .cover-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fad0c4 100%);
+      background-image: url('https://img.freepik.com/premium-vector/hand-drawn-floral-wedding-invitation-card_181182-49228.jpg?semt=ais_hybrid&w=740');
+      background-size: cover;
+      background-position: center;
+      background-blend-mode: overlay;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .cover-page.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.8);
+    }
+
+    .cover-content {
+      text-align: center;
+      color: #2c3e50;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+      backdrop-filter: blur(10px);
+    }
+
+    .cover-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      background: linear-gradient(45deg, #e91e63, #9c27b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cover-subtitle {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #666;
+    }
+
+    .cover-date {
+      font-size: 1rem;
+      color: #888;
+      font-style: italic;
+    }
+
+    /* Heart Button Styles */
+    .heart-button {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: heartbeat 2s infinite;
+    }
+
+    .heart-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px rgba(238, 90, 36, 0.6);
+    }
+
+    .heart-button:active {
+      transform: scale(0.95);
+    }
+
+    .heart-icon {
+      font-size: 2.5rem;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .open-text {
+      margin-top: 15px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 8px 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heartbeat animation */
+    @keyframes heartbeat {
+      0% {
+        transform: scale(1);
+      }
+
+      14% {
+        transform: scale(1.1);
+      }
+
+      28% {
+        transform: scale(1);
+      }
+
+      42% {
+        transform: scale(1.1);
+      }
+
+      70% {
+        transform: scale(1);
+      }
+    }
+
+    /* Floating hearts for cover */
+    .cover-hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .cover-heart {
+      position: absolute;
+      color: rgba(233, 30, 99, 0.6);
+      font-size: 25px;
+      animation: floatCover 8s infinite linear;
+    }
+
+    @keyframes floatCover {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main content initially hidden */
+    .main-content {
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.8s ease;
+    }
+
+    .main-content.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 60px 30px 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-1 {
+      background: url('images/bg.jpeg') center/cover no-repeat;
+      background-blend-mode: overlay;
+      color: #2c3e50;
+      position: relative;
+    }
+
+    .section-2 {
+      background: url('https://us.123rf.com/450wm/inspirator/inspirator1503/inspirator150300015/37670665-vector-seamless-baroque-damask-luxury-background.jpg?ver=6') center/cover no-repeat;
+      background-blend-mode: overlay;
+      color: #2c3e50;
+      position: relative;
+    }
+
+    .section-3 {
+      background: url('https://us.123rf.com/450wm/inspirator/inspirator1503/inspirator150300015/37670665-vector-seamless-baroque-damask-luxury-background.jpg?ver=6') center/cover no-repeat;
+      background-blend-mode: overlay;
+      color: #2c3e50;
+      position: relative;
+    }
+
+    .section-4 {
+      background: url('https://us.123rf.com/450wm/inspirator/inspirator1503/inspirator150300015/37670665-vector-seamless-baroque-damask-luxury-background.jpg?ver=6') center/cover no-repeat;
+      background-blend-mode: overlay;
+      color: #2c3e50;
+      position: relative;
+    }
+
+    .section-majlis {
+      background: url('https://us.123rf.com/450wm/inspirator/inspirator1503/inspirator150300015/37670665-vector-seamless-baroque-damask-luxury-background.jpg?ver=6') center/cover no-repeat;
+      background-blend-mode: overlay;
+      color: #2c3e50;
+      position: relative;
+    }
+
+    /* Add overlay for better text readability */
+    section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.7);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(45deg, #e91e63, #9c27b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+      color: #2c3e50;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 30px 0 20px;
+      color: #2c3e50;
+    }
+
+    p {
+      margin-bottom: 12px;
+      line-height: 1.8;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+
+    .couple-names {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #e91e63;
+      margin: 20px 0;
+    }
+
+    .date-location {
+      font-size: 1.2rem;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px 25px;
+      border-radius: 25px;
+      margin: 20px 0;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .schedule-item {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 12px 20px;
+      margin: 8px 0;
+      border-radius: 15px;
+      border-left: 4px solid #e91e63;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .doa-box {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 25px;
+      border-radius: 20px;
+      margin: 20px 0;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      font-style: italic;
+      line-height: 1.8;
+    }
+
+    #countdown {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 25px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+    }
+
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      margin-top: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Bottom Navigation - Fixed within card width */
+    .bottom-nav {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 20px);
+      max-width: 460px;
+      /* Slightly less than container max-width */
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 25px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 65px;
+      z-index: 999;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 8px;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      margin: 0 5px;
+    }
+
+    .nav-item:hover,
+    .nav-item:active {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .nav-item span {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    /* Content wrapper for fade animations */
+    .content-wrapper {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .content-wrapper.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Floating hearts animation */
+    .hearts {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      color: rgba(233, 30, 99, 0.6);
+      font-size: 20px;
+      animation: float 6s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+
+      #app-container {
+        border-radius: 15px;
+      }
+
+      section {
+        padding: 40px 20px 80px;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .bottom-nav {
+        max-width: calc(100% - 10px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="app-container">
+    <!-- Cover Page -->
+    <div class="cover-page" id="coverPage">
+      <div class="cover-hearts" id="coverHearts"></div>
+
+      <div class="cover-content">
+        <h1 class="cover-title">💕 Ikhwan & Atiqah 💕</h1>
+        <p class="cover-subtitle">Jemputan Majlis Perkahwinan</p>
+        <p class="cover-date">10 Oktober 2025</p>
+      </div>
+
+      <button class="heart-button" id="openButton" onclick="openInvitation()">
+        <span class="heart-icon">💖</span>
+      </button>
+      <p class="open-text">Tekan untuk buka jemputan</p>
+    </div>
+
+    <!-- Main Invitation Content -->
+    <div class="main-content" id="mainContent">
+      <audio id="weddingMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <!-- Floating hearts -->
+      <div class="hearts" id="hearts"></div>
+
+      <!-- Section 1 - Main Title -->
+      <section class="section-1" id="home">
+        <div class="content-wrapper">
+          <div class="decorative-border"></div>
+          <h1>Ikwan ❤️ Atiqah</h1>
+          <div class="date-location">
+            <p><strong>18 Oktober 2025</strong></p>
+            <p>Qurata Riverside Resort, Kuala Terengganu</p>
+          </div>
+          <p style="font-size: 1.1rem; margin-top: 30px; font-style: italic;">
+            "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri,
+            supaya kamu cenderung dan merasa tenteram kepadanya"
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 2 - Details -->
+      <section class="section-2" id="details">
+        <div class="content-wrapper">
+          <h2>Assalamualaikum WBT & Salam Sejahtera</h2>
+
+          <p style="margin: 25px 0;">Dengan penuh kesyukuran kehadrat Illahi, kami mempersilakan
+            Dato'/Datin/Dr/Tuan/Puan/Encik/Cik ke walimatulurus anakanda kami:</p>
+
+          <h3>Waris Pengantin Perempuan</h3>
+          <div class="couple-names" style="font-size: 1.8rem; color: #9c27b0;">
+            <p><strong>Shuhaimi Bin Awang</strong> & <strong>Norazimah binti Yaakub</strong></p>
+          </div>
+
+          <h3>Waris Pengantin Lelaki</h3>
+          <div class="couple-names" style="font-size: 1.8rem; color: #9c27b0;">
+            <p><strong>Hafiz bin Rahman</strong> & <strong>Noraini binti Omar</strong></p>
+            <p><strong>Shahrul bin Idris</strong> & <strong>Roslina binti Malik</strong></p>
+          </div>
+
+          <div class="date-location">
+            <p><strong>📅 Tarikh:</strong> Sabtu, 18 Oktober 2025</p>
+            <p><strong>⏰ Masa:</strong> 11:00 Pagi - 4:00 Petang</p>
+            <p><strong>📍 Tempat:</strong> Qurata Riverside Resort, Kuala Terengganu</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section - Aturcara Majlis -->
+      <section class="section-majlis" id="aturcara">
+        <div class="content-wrapper">
+          <h2>✨ Aturcara Majlis</h2>
+          <div class="schedule-item">
+            <p><strong>11:00 AM</strong> – Ketibaan Tetamu</p>
+          </div>
+          <div class="schedule-item">
+            <p><strong>12:00 PM</strong> – Jamuan Makan</p>
+          </div>
+          <div class="schedule-item">
+            <p><strong>12:30 PM</strong> – Ketibaan Pengantin</p>
+          </div>
+          <div class="schedule-item">
+            <p><strong>1:00 PM</strong> – Sesi Bergambar</p>
+          </div>
+          <div class="schedule-item">
+            <p><strong>4:00 PM</strong> – Majlis Tamat</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3 - Doa & Countdown -->
+      <section class="section-3" id="berkat">
+        <div class="content-wrapper">
+          <h2>🤲 Doa Keberkatan</h2>
+          <div class="doa-box">
+            <p>"Ya Allah, berkatilah majlis perkahwinan ini, limpahkan baraqah dan rahmat kepada kedua mempelai ini,</p>
+            <p>Kurniakanlah mereka zuriat yang soleh dan solehah.</p>
+            <p>Kekalkanlah jodoh mereka di dunia dan di akhirat dan sempurnakanlah agama mereka dengan berkat ikatan
+              ini."</p>
+            <p style="margin-top: 15px; font-weight: 600;">Aamiin Ya Rabbal Alamiin</p>
+          </div>
+          <div id="countdown"></div>
+        </div>
+      </section>
+
+      <!-- Section 4 - Guestbook -->
+      <section class="section-4" id="guestbook">
+        <div class="content-wrapper">
+          <h2>💌 Tinggalkan Ucapan</h2>
+          <p style="font-size: 1.1rem; margin-bottom: 20px;">Terima kasih atas doa & kata-kata yang indah dari hati</p>
+          <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDUMMYFORMURL/viewform?embedded=true">Loading…</iframe>
+        </div>
+      </section>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <a href="tel:+60199809663" class="nav-item">
+          <span>📞</span>
+          Call Mak
+        </a>
+        <a href="tel:+60139410169" class="nav-item">
+          <span>📱</span>
+          Call Ayah
+        </a>
+        <a href="#guestbook" class="nav-item">
+          <span>📝</span>
+          RSVP
+        </a>
+        <a href="#details" class="nav-item">
+          <span>📍</span>
+          Lokasi
+        </a>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    // Open invitation function
+    function openInvitation() {
+      const coverPage = document.getElementById('coverPage');
+      const mainContent = document.getElementById('mainContent');
+
+      // Hide cover page with animation
+      coverPage.classList.add('hidden');
+
+      // Show main content and play music
+      setTimeout(() => {
+        mainContent.classList.add('visible');
+
+        // Play audio if paused
+        const music = document.getElementById('weddingMusic');
+        if (music.paused) {
+          music.play().catch(e => {
+            console.warn("Audio couldn't play automatically:", e);
+          });
+        }
+      }, 400);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      const music = document.getElementById('weddingMusic');
+      if (document.hidden) {
+        music.pause();
+      } else {
+        music.play().catch(() => { });
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      const music = document.getElementById('weddingMusic');
+      music.pause();
+    });
+
+    window.addEventListener('focus', () => {
+      const music = document.getElementById('weddingMusic');
+      music.play().catch(() => { });
+    });
+    // Enhanced fade-in/fade-out for content only (not background)
+    document.addEventListener("DOMContentLoaded", () => {
+      const contentWrappers = document.querySelectorAll(".content-wrapper");
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          } else {
+            // Remove visible class when scrolling away (both up and down)
+            entry.target.classList.remove("visible");
+          }
+        });
+      }, {
+        threshold: 0.3,
+        rootMargin: '-10% 0px -10% 0px'
+      });
+
+      contentWrappers.forEach(wrapper => {
+        observer.observe(wrapper);
+      });
+    });
+
+    // Enhanced countdown with days, hours, minutes
+    const countdownDate = new Date("October 10, 2025 00:00:00").getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
+
+      if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        document.getElementById("countdown").innerHTML = `
+        <p>⏳ <strong>Countdown Hari Bahagia</strong></p>
+        <p style="font-size: 1.5rem; margin-top: 10px;">${days} hari ${hours} jam ${minutes} minit lagi 💍</p>
+      `;
+      } else {
+        document.getElementById("countdown").innerHTML = `
+        <p>🎉 <strong>Hari Yang Ditunggu Telah Tiba!</strong></p>
+        <p>Selamat Pengantin Baru! 💕</p>
+      `;
+      }
+    };
+
+    updateCountdown();
+    setInterval(updateCountdown, 60000); // Update every minute
+
+    // Floating hearts animation
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '💕';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+
+      document.getElementById('hearts').appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
+    }
+
+    // Create hearts for cover page
+    function createCoverHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('cover-heart');
+      heart.innerHTML = '💕';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
+      heart.style.fontSize = (Math.random() * 15 + 20) + 'px';
+
+      document.getElementById('coverHearts').appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 8000);
+    }
+
+    // Create cover hearts periodically
+    setInterval(createCoverHeart, 1500);
+
+    // Smooth scrolling for navigation
+    document.querySelectorAll('.nav-item[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
