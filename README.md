@@ -1,1 +1,1 @@
-# ummi98.invitation_card.github.io
+# invitation_card.io
